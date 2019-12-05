@@ -1,44 +1,117 @@
 const fs = require('fs')
 
+const input = 5
+
 const add = (a, b) => a + b
 
 const multi = (a, b) => a * b
 
-const expectedOutput = 19690720
-
-const reset = (codes, noun, verb) => {
-  return [codes[0], noun, verb, ...codes.slice(3)]
-}
-
-const getResult = codes => {
-  for (let i = 0; i < codes.length; i += 4) {
-    const code = codes[i]
-    if (code === 99) {
-      return codes[0]
-    }
-
-    if (code === 1) {
-      const result = add(codes[codes[i + 1]], codes[codes[i + 2]])
-      codes[codes[i + 3]] = result
-    }
-
-    if (code === 2) {
-      const result = multi(codes[codes[i + 1]], codes[codes[i + 2]])
-      codes[codes[i + 3]] = result
-    }
+const parameterMode = (digits, paramNumber) => {
+  try {
+    return parseInt(digits[digits.length - paramNumber - 2])
+  } catch (e) {
+    return 0
   }
 }
 
+const getParam = (digits, codes, i, paramNumber) => {
+  return parameterMode(digits, paramNumber) === 1
+    ? codes[i + paramNumber]
+    : codes[codes[i + paramNumber]]
+}
+
+const getDigitsAndCode = instruction => {
+  if (('' + instruction).length === 1) {
+    return [[0, 0, 0, 0, instruction], instruction]
+  }
+
+  const digits = ('' + instruction).split('')
+  const code = parseInt(
+    `${digits[digits.length - 2]}${digits[digits.length - 1]}`
+  )
+
+  return [digits, code]
+}
+
 fs.readFile('input.txt', 'utf8', (_, data) => {
-  const original = data.split(',').map(x => parseInt(x))
-  for (let noun = 0; noun <= 99; noun++) {
-    for (let verb = 0; verb <= 99; verb++) {
-      const codes = reset(original, noun, verb)
-      const result = getResult(codes)
-      if (result === expectedOutput) {
-        console.log(100 * noun + verb)
-        return
+  let codes = data.split(',').map(x => parseInt(x))
+  let i = 0
+  while (i < codes.length) {
+    const instruction = codes[i]
+    const [digits, code] = getDigitsAndCode(instruction)
+
+    if (code === 99) {
+      return
+    }
+
+    if (code === 1) {
+      const param1 = getParam(digits, codes, i, 1)
+      const param2 = getParam(digits, codes, i, 2)
+
+      const result = add(param1, param2)
+      codes[codes[i + 3]] = result
+      i += 4
+    }
+
+    if (code === 2) {
+      const param1 = getParam(digits, codes, i, 1)
+      const param2 = getParam(digits, codes, i, 2)
+      const result = multi(param1, param2)
+      codes[codes[i + 3]] = result
+      i += 4
+    }
+
+    if (code === 3) {
+      codes[codes[i + 1]] = input
+      i += 2
+    }
+
+    if (code === 4) {
+      console.log(codes[codes[i + 1]])
+      i += 2
+    }
+
+    if (code === 5) {
+      const param1 = getParam(digits, codes, i, 1)
+      if (param1 != 0) {
+        i = getParam(digits, codes, i, 2)
+      } else {
+        i += 3
       }
+    }
+
+    if (code === 6) {
+      const param1 = getParam(digits, codes, i, 1)
+      if (param1 === 0) {
+        i = getParam(digits, codes, i, 2)
+      } else {
+        i += 3
+      }
+    }
+
+    if (code === 7) {
+      const param1 = getParam(digits, codes, i, 1)
+      const param2 = getParam(digits, codes, i, 2)
+      const param3 = codes[i+3]
+      if (param1 < param2) {
+        codes[param3] = 1
+      } else {
+        codes[param3] = 0
+      }
+      i += 4
+    }
+
+    if (code === 8) {
+      const param1 = getParam(digits, codes, i, 1)
+      const param2 = getParam(digits, codes, i, 2)
+      const param3 = codes[i+3]
+      if (param1 === param2) {
+        codes[param3] = 1
+      } else {
+        codes[param3] = 0
+      }
+      
+      i += 4
     }
   }
 })
