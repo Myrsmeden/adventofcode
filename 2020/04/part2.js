@@ -33,22 +33,20 @@ const hasValidValue = (key, value) => {
         Number(value) <= 2030
       );
     case "hgt": {
-      const re =  /\d+(cm|in)/gm
+      const re = /\d+(cm|in)/gm;
       const valid = re.test(value);
-      const numbers = Number(value.replace('cm', '').replace('in',''))
-      if (value.indexOf('cm') >-1) {
-        return valid && numbers >= 150 &&
-        numbers <= 193
+      const numbers = Number(value.replace("cm", "").replace("in", ""));
+      if (value.indexOf("cm") > -1) {
+        return valid && numbers >= 150 && numbers <= 193;
       }
 
-      if (value.indexOf('in') > -1) {
-        return valid && numbers >= 59 &&
-        numbers <= 76
+      if (value.indexOf("in") > -1) {
+        return valid && numbers >= 59 && numbers <= 76;
       }
     }
     case "hcl": {
-      const re = /^#([a-fA-F0-9]{6}|[a-fA-F0-9]{3})$/gm
-      return re.test(value)
+      const re = /^#([a-fA-F0-9]{6}|[a-fA-F0-9]{3})$/gm;
+      return re.test(value);
     }
 
     case "ecl":
@@ -64,33 +62,13 @@ const isValid = (passportData) => {
     return { ...acc, [key]: value };
   }, {});
 
-
-  const isValid = REQUIRED_FIELDS.reduce((hasAll, field) => {
+  return REQUIRED_FIELDS.reduce((hasAll, field) => {
     return (
       hasAll &&
       Object.keys(fields).includes(field) &&
       hasValidValue(field, fields[field])
     );
   }, true);
-
-
-  return isValid
 };
 
 console.log(passports.filter(isValid).length);
-
-/*
-console.log('byr valid:   2002', hasValidValue('byr', '2002'))
-console.log('byr invalid: 2003', hasValidValue('byr', '2003'))
-console.log('hgt valid:   60in', hasValidValue('hgt', '60in'))
-console.log('hgt valid:   190cm', hasValidValue('hgt', '190cm'))
-console.log('hgt invalid: 190in', hasValidValue('hgt', '190in'))
-console.log('hgt invalid: 190', hasValidValue('hgt', '190'))
-console.log('hcl valid:   #123abc', hasValidValue('hcl', '#123abc'))
-console.log('hcl invalid: #123abz', hasValidValue('hcl', '#123abz'))
-console.log('hcl invalid: 123abc', hasValidValue('hcl', '123abc'))
-console.log('ecl valid:   brn', hasValidValue('ecl', 'brn'))
-console.log('ecl invalid: wat', hasValidValue('ecl', 'wat'))
-console.log('pid valid:   000000001', hasValidValue('pid', '000000001'))
-console.log('pid invalid: 0123456789', hasValidValue('pid', '0123456789'))
-hasValidValue('')*/
