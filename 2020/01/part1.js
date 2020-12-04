@@ -17,8 +17,4 @@ const findNumber = (numbers) => {
   }
 };
 
-const findPair = numbers.reduce((acc, number) => {
-    
-})
-
 console.log(findNumber(numbers));
