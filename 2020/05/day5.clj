@@ -1,4 +1,4 @@
-(require '[clojure.string])
+(use 'clojure.test)
 
 (defn get-input []
   (slurp "/Users/myrsmeden/Development/adventofcode/2020/05/input.txt"))
@@ -45,3 +45,25 @@
 
 (part1)
 (part2)
+
+(deftest first-half
+  (is (= (is-first-half? "ABC") false))
+  (is (= (is-first-half? "LBC") true))
+  (is (= (is-first-half? "FBC") true))
+  (is (= (is-first-half? "ABL") false)))
+
+(deftest half-index
+  (is (= (get-half-index '(0 1 2 3 4 5 6 7)) 4.0)))
+
+(deftest position
+  (is (= (get-position (range 128) "BFFFBBF") 70))
+  (is (= (get-position (range 128) "FFFBBBF") 14))
+  (is (= (get-position (range 128) "BBFFBBF") 102))
+  (is (= (get-position (range 8) "RRR") 7))
+  (is (= (get-position (range 8) "RLL") 4)))
+
+(deftest id-calculation 
+  (is (= (calculate-id "BFFFBBFRRR") 567))
+  (is (= (calculate-id "FFFBBBFRRR") 119))
+  (is (= (calculate-id "BBFFBBFRLL") 820)))
+(run-all-tests)
