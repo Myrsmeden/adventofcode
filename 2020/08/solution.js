@@ -32,6 +32,8 @@ const switchInstruction = (instruction) => {
   return 'nop';
 };
 
+const hasBeenHereBefore = (visitedPointerValues, pointer) => visitedPointerValues.find((value) => value === pointer);
+
 const run = (instructionToSwitch) => {
   let pointer = 0;
   let accummulator = 0;
@@ -40,7 +42,8 @@ const run = (instructionToSwitch) => {
     let [instruction, arg] = instructions[pointer].split(' ');
     const argument = parseInt(arg);
 
-    if (visitedPointerValues.find((value) => value === pointer)) {
+    if (hasBeenHereBefore(visitedPointerValues, pointer)) {
+      // We are now in a loop, terminate
       return [false, accummulator];
     }
     visitedPointerValues.push(pointer);
