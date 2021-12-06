@@ -10,7 +10,7 @@ const instructions = input.split('\n').map((input) => {
   return [instruction, parseInt(distance)];
 });
 
-const { horisontal, depth, aim } = instructions.reduce(
+const { horisontal, depth } = instructions.reduce(
   (acc, [instruction, distance]) => {
     if (instruction === 'forward') {
       acc.horisontal += distance;
