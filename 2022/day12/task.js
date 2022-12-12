@@ -65,14 +65,27 @@ const BFS = (grid, root) => {
   }
 };
 
-const end = BFS(gridItems, startItem);
+const startItems = gridItems.filter((item) => item.value === 'S' || item.value === 'a');
+const paths = startItems.map((startItem, i) => {
+  const gridItems = input
+    .split('\n')
+    .map((row, y) => row.split('').map((value, x) => createGridItem(x, y, value)))
+    .flat();
+  const end = BFS(gridItems, startItem);
+  let steps = 0;
 
-let steps = 0;
+  let item = end;
 
-let item = end;
+  if (end) {
+    while (item.parent) {
+      item = item.parent;
+      steps += 1;
+    }
 
-while (item.parent) {
-  item = item.parent;
-  steps += 1;
-}
-console.log(steps);
+    return steps;
+  }
+
+  return Infinity;
+});
+
+console.log(Math.min(...paths));
